@@ -1,7 +1,10 @@
 /**
- * API Service - Comunicação com Backend
- * Equivalente aos serviços REST em Java/Spring
+ * API Service - Comunicação com Backend com Tratamento Global de Erros
+ * Refatorado para usar Axios com interceptadores
  */
+
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import { toast } from '@/hooks/use-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -18,86 +21,205 @@ export interface ApiError {
 }
 
 class ApiService {
-  private baseURL: string;
+  private client: AxiosInstance;
 
   constructor(baseURL: string = API_BASE_URL) {
-    this.baseURL = baseURL;
-  }
-
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
-    const url = `${this.baseURL}${endpoint}`;
-    
-    const config: RequestInit = {
+    this.client = axios.create({
+      baseURL,
+      timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
       },
-      ...options,
+    });
+
+    this.setupInterceptors();
+  }
+
+  private setupInterceptors(): void {
+    // Request interceptor - adiciona token de autenticação
+    this.client.interceptors.request.use(
+      (config) => {
+        // Obter token do localStorage
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    // Response interceptor - tratamento global de erros
+    this.client.interceptors.response.use(
+      (response: AxiosResponse) => {
+        return response;
+      },
+      (error: AxiosError) => {
+        return this.handleGlobalError(error);
+      }
+    );
+  }
+
+  private async handleGlobalError(error: AxiosError): Promise<never> {
+    const status = error.response?.status || 0;
+    const errorData = error.response?.data as any;
+    
+    switch (status) {
+      case 401:
+        // Token inválido ou expirado
+        this.handleUnauthorized();
+        break;
+        
+      case 403:
+        toast({
+          title: "Acesso Negado",
+          description: "Você não tem permissão para realizar esta ação.",
+          variant: "destructive",
+        });
+        break;
+        
+      case 404:
+        toast({
+          title: "Recurso Não Encontrado",
+          description: "O recurso solicitado não foi encontrado.",
+          variant: "destructive",
+        });
+        break;
+        
+      case 422:
+        // Erro de validação
+        const validationMessage = this.extractValidationMessage(errorData);
+        toast({
+          title: "Erro de Validação",
+          description: validationMessage,
+          variant: "destructive",
+        });
+        break;
+        
+      case 500:
+        toast({
+          title: "Erro Interno do Servidor",
+          description: "Ocorreu um erro interno. Tente novamente mais tarde.",
+          variant: "destructive",
+        });
+        break;
+        
+      case 0:
+        // Network error
+        toast({
+          title: "Erro de Conexão",
+          description: "Não foi possível conectar ao servidor. Verifique sua conexão.",
+          variant: "destructive",
+        });
+        break;
+        
+      default:
+        // Outros erros
+        const message = errorData?.detail || errorData?.message || 'Erro desconhecido';
+        toast({
+          title: "Erro",
+          description: message,
+          variant: "destructive",
+        });
+    }
+
+    // Criar erro padronizado
+    const apiError: ApiError = {
+      message: errorData?.detail || errorData?.message || `HTTP ${status}`,
+      status,
+      details: errorData,
     };
 
-    try {
-      const response = await fetch(url, config);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw {
-          message: errorData.detail || `HTTP ${response.status}`,
-          status: response.status,
-          details: errorData,
-        } as ApiError;
-      }
+    return Promise.reject(apiError);
+  }
 
-      const data = await response.json();
-      
-      return {
-        data,
-        status: response.status,
-      };
-    } catch (error) {
-      if (error instanceof TypeError) {
-        // Network error
-        throw {
-          message: 'Erro de conexão com o servidor',
-          status: 0,
-          details: error,
-        } as ApiError;
+  private handleUnauthorized(): void {
+    // Limpar dados de autenticação
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_data');
+    
+    // Mostrar toast de sessão expirada
+    toast({
+      title: "Sessão Expirada",
+      description: "Sua sessão expirou. Faça login novamente.",
+      variant: "destructive",
+    });
+    
+    // Redirecionar para login após um pequeno delay
+    setTimeout(() => {
+      window.location.href = '/login';
+    }, 2000);
+  }
+
+  private extractValidationMessage(errorData: any): string {
+    if (errorData?.detail) {
+      if (Array.isArray(errorData.detail)) {
+        return errorData.detail.map((err: any) => err.msg || err.message).join(', ');
       }
-      throw error;
+      return errorData.detail;
     }
+    return 'Dados inválidos fornecidos.';
   }
 
-  // GET request
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
-  }
-
-  // POST request
-  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
+  // Métodos HTTP públicos com suporte a AbortController
+  async get<T>(endpoint: string, options?: { signal?: AbortSignal }): Promise<ApiResponse<T>> {
+    const response = await this.client.get<T>(endpoint, {
+      signal: options?.signal,
     });
+    return {
+      data: response.data,
+      status: response.status,
+    };
   }
 
-  // PUT request
-  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
+  async post<T>(endpoint: string, data?: any, options?: { signal?: AbortSignal }): Promise<ApiResponse<T>> {
+    const response = await this.client.post<T>(endpoint, data, {
+      signal: options?.signal,
     });
+    return {
+      data: response.data,
+      status: response.status,
+    };
   }
 
-  // DELETE request
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+  async put<T>(endpoint: string, data?: any, options?: { signal?: AbortSignal }): Promise<ApiResponse<T>> {
+    const response = await this.client.put<T>(endpoint, data, {
+      signal: options?.signal,
+    });
+    return {
+      data: response.data,
+      status: response.status,
+    };
+  }
+
+  async delete<T>(endpoint: string, options?: { signal?: AbortSignal }): Promise<ApiResponse<T>> {
+    const response = await this.client.delete<T>(endpoint, {
+      signal: options?.signal,
+    });
+    return {
+      data: response.data,
+      status: response.status,
+    };
   }
 
   // Health check
   async healthCheck(): Promise<ApiResponse<{ status: string; app_name: string; version: string }>> {
     return this.get('/health');
+  }
+
+  // Método para atualizar token
+  setAuthToken(token: string): void {
+    localStorage.setItem('auth_token', token);
+  }
+
+  // Método para limpar token
+  clearAuthToken(): void {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_data');
   }
 }
 

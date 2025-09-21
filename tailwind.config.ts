@@ -14,44 +14,117 @@ export default {
     },
     extend: {
       colors: {
+        // Sistema de cores unificado - fonte única da verdade
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // Cores primárias
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           glow: "hsl(var(--primary-glow))",
+          50: "hsl(var(--primary-50))",
+          100: "hsl(var(--primary-100))",
+          200: "hsl(var(--primary-200))",
+          300: "hsl(var(--primary-300))",
+          400: "hsl(var(--primary-400))",
+          500: "hsl(var(--primary-500))",
+          600: "hsl(var(--primary-600))",
+          700: "hsl(var(--primary-700))",
+          800: "hsl(var(--primary-800))",
+          900: "hsl(var(--primary-900))",
+          950: "hsl(var(--primary-950))",
         },
+        
+        // Cores secundárias
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+          50: "hsl(var(--secondary-50))",
+          100: "hsl(var(--secondary-100))",
+          200: "hsl(var(--secondary-200))",
+          300: "hsl(var(--secondary-300))",
+          400: "hsl(var(--secondary-400))",
+          500: "hsl(var(--secondary-500))",
+          600: "hsl(var(--secondary-600))",
+          700: "hsl(var(--secondary-700))",
+          800: "hsl(var(--secondary-800))",
+          900: "hsl(var(--secondary-900))",
+          950: "hsl(var(--secondary-950))",
         },
+        
+        // Estados e feedback
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+          50: "hsl(var(--destructive-50))",
+          100: "hsl(var(--destructive-100))",
+          500: "hsl(var(--destructive-500))",
+          600: "hsl(var(--destructive-600))",
+          700: "hsl(var(--destructive-700))",
+          900: "hsl(var(--destructive-900))",
         },
+        
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
+          50: "hsl(var(--success-50))",
+          100: "hsl(var(--success-100))",
+          500: "hsl(var(--success-500))",
+          600: "hsl(var(--success-600))",
+          700: "hsl(var(--success-700))",
+          900: "hsl(var(--success-900))",
         },
+        
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+          50: "hsl(var(--warning-50))",
+          100: "hsl(var(--warning-100))",
+          500: "hsl(var(--warning-500))",
+          600: "hsl(var(--warning-600))",
+          700: "hsl(var(--warning-700))",
+          900: "hsl(var(--warning-900))",
+        },
+        
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+          50: "hsl(var(--info-50))",
+          100: "hsl(var(--info-100))",
+          500: "hsl(var(--info-500))",
+          600: "hsl(var(--info-600))",
+          700: "hsl(var(--info-700))",
+          900: "hsl(var(--info-900))",
+        },
+        
+        // Cores neutras
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
+        
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        
+        // Componentes específicos
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          border: "hsl(var(--card-border))",
+          shadow: "hsl(var(--card-shadow))",
         },
+        
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -61,6 +134,21 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        
+        // Cores específicas da aplicação
+        neural: {
+          DEFAULT: "hsl(var(--neural))",
+          foreground: "hsl(var(--neural-foreground))",
+          glow: "hsl(var(--neural-glow))",
+          grid: "hsl(var(--neural-grid))",
+        },
+        
+        dashboard: {
+          background: "hsl(var(--dashboard-background))",
+          card: "hsl(var(--dashboard-card))",
+          border: "hsl(var(--dashboard-border))",
+          accent: "hsl(var(--dashboard-accent))",
         },
       },
       backgroundImage: {
