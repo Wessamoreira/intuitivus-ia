@@ -16,7 +16,7 @@ httpx>=0.25.0,<0.26.0  # Para testes de API
 black>=23.11.0,<24.0.0
 isort>=5.12.0,<5.13.0
 flake8>=6.1.0,<7.0.0
-mypy>=1.7.0,<1.8.0
+mypy>=1.7.0,<1.19.0
 
 # Desenvolvimento
 pre-commit>=3.5.0,<4.0.0
