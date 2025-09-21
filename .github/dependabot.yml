@@ -1,0 +1,73 @@
+# Configuração do Dependabot para atualizações automáticas de dependências
+version: 2
+updates:
+  # Backend Python
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "team-backend"
+    assignees:
+      - "team-backend"
+    commit-message:
+      prefix: "deps(backend)"
+      include: "scope"
+    groups:
+      fastapi:
+        patterns:
+          - "fastapi*"
+          - "uvicorn*"
+          - "pydantic*"
+      security:
+        patterns:
+          - "cryptography*"
+          - "passlib*"
+          - "python-jose*"
+      ai-llm:
+        patterns:
+          - "openai*"
+          - "anthropic*"
+          - "langchain*"
+          - "crewai*"
+
+  # Frontend NPM
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "team-frontend"
+    assignees:
+      - "team-frontend"
+    commit-message:
+      prefix: "deps(frontend)"
+      include: "scope"
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+      radix:
+        patterns:
+          - "@radix-ui/*"
+      dev-tools:
+        patterns:
+          - "eslint*"
+          - "typescript*"
+          - "vite*"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
