@@ -57,7 +57,7 @@ venv.bak/
 
 # Database
 *.db
-*.sqlite3
+*.sqlite*
 
 # Environment variables
 .env.local

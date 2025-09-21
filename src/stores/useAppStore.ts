@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { shallow } from 'zustand/shallow';
 import type {
   User,
   Agent,
@@ -498,9 +499,9 @@ export const useUnreadNotifications = () =>
   useAppStore((state) => state.notifications.filter((notification) => !notification.read));
 
 export const useActiveCampaigns = () =>
-  useAppStore((state) => state.campaigns.filter((campaign) => campaign.status === 'active'));
+  useAppStore((state) => state.campaigns.filter((campaign) => campaign.status === 'active'), shallow);
 
-// Computed values
+// Computed values com shallow comparison para evitar re-renders
 export const useComputedStats = () =>
   useAppStore((state) => ({
     totalAgents: state.agents.length,
@@ -510,4 +511,47 @@ export const useComputedStats = () =>
     totalCampaigns: state.campaigns.length,
     activeCampaigns: state.campaigns.filter((c) => c.status === 'active').length,
     unreadNotifications: state.notifications.filter((n) => !n.read).length,
-  }));
+  }), shallow);
+
+// Selectors otimizados para performance
+export const useFilteredAgents = (filters?: { status?: string; type?: string }) =>
+  useAppStore((state) => {
+    let filtered = state.agents;
+    if (filters?.status) {
+      filtered = filtered.filter(agent => agent.status === filters.status);
+    }
+    if (filters?.type) {
+      filtered = filtered.filter(agent => agent.type === filters.type);
+    }
+    return filtered;
+  }, shallow);
+
+export const useFilteredTasks = (filters?: { status?: string; priority?: string }) =>
+  useAppStore((state) => {
+    let filtered = state.tasks;
+    if (filters?.status) {
+      filtered = filtered.filter(task => task.status === filters.status);
+    }
+    if (filters?.priority) {
+      filtered = filtered.filter(task => task.priority === filters.priority);
+    }
+    return filtered;
+  }, shallow);
+
+export const useRecentNotifications = (limit: number = 5) =>
+  useAppStore((state) => 
+    state.notifications
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, limit)
+  , shallow);
+
+// Selectors para UI state
+export const useUIState = () => useAppStore((state) => state.ui, shallow);
+export const useLoadingStates = () => useAppStore((state) => state.loading, shallow);
+export const useErrorStates = () => useAppStore((state) => state.errors, shallow);
+
+// Selectors para métricas em tempo real
+export const useRealtimeMetrics = () => useAppStore((state) => state.realtimeMetrics, shallow);
+
+// Hook para ações otimizadas
+export const useAppActions = () => useAppStore((state) => state.actions);
