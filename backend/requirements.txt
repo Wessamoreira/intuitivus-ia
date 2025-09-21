@@ -1,0 +1,29 @@
+# ===================================================================
+# AI AGENTS PLATFORM - DEPENDÊNCIAS PRINCIPAIS
+# Instalação modular para melhor controle e performance
+# ===================================================================
+
+# Dependências base (obrigatórias)
+-r requirements-base.txt
+
+# Dependências AI/LLM (opcional - descomente se necessário)
+-r requirements-ai.txt
+
+# Integrações externas (opcional - descomente se necessário) 
+-r requirements-integrations.txt
+
+# ===================================================================
+# INSTALAÇÃO MODULAR:
+# 
+# Apenas base (API sem AI):
+# pip install -r requirements-base.txt
+#
+# Com AI/LLM:
+# pip install -r requirements-base.txt -r requirements-ai.txt
+#
+# Completa:
+# pip install -r requirements.txt
+#
+# Desenvolvimento:
+# pip install -r requirements-dev.txt
+# ===================================================================

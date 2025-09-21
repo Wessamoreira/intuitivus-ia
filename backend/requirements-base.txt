@@ -1,0 +1,34 @@
+# ===================================================================
+# DEPENDÊNCIAS BASE - PRODUÇÃO
+# Versões com ranges seguros para atualizações controladas
+# ===================================================================
+
+# FastAPI e servidor web
+fastapi>=0.104.0,<0.110.0
+uvicorn[standard]>=0.24.0,<0.26.0
+python-multipart>=0.0.6,<0.1.0
+
+# Banco de dados e ORM
+sqlalchemy>=2.0.0,<2.1.0
+alembic>=1.12.0,<1.14.0
+psycopg2-binary>=2.9.0,<2.10.0
+
+# Autenticação e segurança
+python-jose[cryptography]>=3.3.0,<3.4.0
+passlib[bcrypt]>=1.7.4,<1.8.0
+cryptography>=41.0.0,<42.0.0
+
+# Validação e serialização
+pydantic>=2.5.0,<2.6.0
+pydantic-settings>=2.1.0,<2.2.0
+
+# HTTP requests e comunicação
+httpx>=0.25.0,<0.26.0
+requests>=2.31.0,<2.32.0
+
+# Utilitários essenciais
+python-dotenv>=1.0.0,<1.1.0
+redis>=5.0.1,<5.1.0
+
+# Email
+resend>=0.6.0,<0.7.0

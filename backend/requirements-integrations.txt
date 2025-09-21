@@ -1,0 +1,13 @@
+# ===================================================================
+# DEPENDÊNCIAS INTEGRAÇÕES - MÓDULO OPCIONAL
+# WhatsApp, Ads, e outras integrações externas
+# ===================================================================
+
+# WhatsApp Business
+twilio>=8.10.0,<8.11.0
+
+# Background jobs e filas
+celery>=5.3.0,<5.4.0
+
+# Cache e performance
+# redis já está em requirements-base.txt

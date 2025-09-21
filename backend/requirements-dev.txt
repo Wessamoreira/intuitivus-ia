@@ -1,0 +1,27 @@
+# ===================================================================
+# DEPENDÊNCIAS DESENVOLVIMENTO - APENAS DEV/TEST
+# Ferramentas de desenvolvimento, testes e qualidade de código
+# ===================================================================
+
+# Incluir dependências base
+-r requirements-base.txt
+
+# Testes
+pytest>=7.4.0,<8.0.0
+pytest-asyncio>=0.21.0,<0.22.0
+pytest-cov>=4.1.0,<5.0.0
+httpx>=0.25.0,<0.26.0  # Para testes de API
+
+# Qualidade de código
+black>=23.11.0,<24.0.0
+isort>=5.12.0,<5.13.0
+flake8>=6.1.0,<7.0.0
+mypy>=1.7.0,<1.8.0
+
+# Desenvolvimento
+pre-commit>=3.5.0,<4.0.0
+watchfiles>=0.21.0,<0.22.0
+
+# Debugging e profiling
+ipdb>=0.13.0,<0.14.0
+memory-profiler>=0.61.0,<0.62.0
