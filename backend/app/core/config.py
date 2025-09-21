@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     
     # Segurança - OBRIGATÓRIAS em produção
-    SECRET_KEY: str = Field(default_factory=lambda: secrets.token_urlsafe(32))
+    SECRET_KEY: Optional[str] = None
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
@@ -103,6 +103,8 @@ class Settings(BaseSettings):
     
     @validator("SECRET_KEY")
     def validate_secret_key(cls, v):
+        if v is None:
+            raise ValueError("SECRET_KEY é obrigatória e deve ser definida via variável de ambiente!")
         if v == "your-super-secret-key-change-in-production":
             raise ValueError("SECRET_KEY deve ser alterada em produção!")
         if len(v) < 32:
@@ -170,7 +172,9 @@ def validate_critical_settings():
     errors = []
     
     # Validar SECRET_KEY
-    if settings.SECRET_KEY == "your-super-secret-key-change-in-production":
+    if not settings.SECRET_KEY:
+        errors.append("SECRET_KEY é obrigatória e deve ser definida via variável de ambiente!")
+    elif settings.SECRET_KEY == "your-super-secret-key-change-in-production":
         errors.append("SECRET_KEY deve ser alterada!")
     
     # Validar configurações de produção

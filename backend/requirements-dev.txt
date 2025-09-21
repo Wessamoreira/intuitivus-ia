@@ -1,22 +1,45 @@
 # ===================================================================
-# DEPENDÊNCIAS DESENVOLVIMENTO - APENAS DEV/TEST
+# DEPENDÊNCIAS DESENVOLVIMENTO E TESTE - CONSOLIDADO
 # Ferramentas de desenvolvimento, testes e qualidade de código
 # ===================================================================
 
 # Incluir dependências base
 -r requirements-base.txt
 
-# Testes
+# Framework de testes principal
 pytest>=7.4.0,<8.0.0
 pytest-asyncio>=0.21.0,<0.22.0
 pytest-cov>=4.1.0,<5.0.0
-httpx>=0.25.0,<0.26.0  # Para testes de API
+pytest-mock>=3.12.0,<4.0.0
+pytest-html>=4.1.0,<5.0.0
+
+# Testes HTTP/API
+httpx>=0.25.0,<0.26.0
+pytest-httpx>=0.26.0,<0.27.0
+
+# Mocking e fixtures
+responses>=0.24.0,<0.25.0
+factory-boy>=3.3.0,<4.0.0
+
+# Testes de banco de dados
+pytest-postgresql>=5.0.0,<6.0.0
+sqlalchemy-utils>=0.41.0,<0.42.0
+
+# Relatórios e cobertura
+coverage>=7.3.0,<8.0.0
+
+# Performance e load testing
+locust>=2.17.0,<3.0.0
 
 # Qualidade de código
 black>=23.11.0,<24.0.0
-isort>=5.12.0,<5.13.0
+isort>=5.12.0,<6.0.0
 flake8>=6.1.0,<7.0.0
-mypy>=1.7.0,<1.8.0
+mypy>=1.7.0,<2.0.0
+
+# Security testing
+bandit>=1.7.0,<2.0.0
+safety>=2.3.0,<3.0.0
 
 # Desenvolvimento
 pre-commit>=3.5.0,<4.0.0
