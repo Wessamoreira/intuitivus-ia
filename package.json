@@ -94,6 +94,6 @@
     "msw": "^2.0.11",
     "@playwright/test": "^1.40.1",
     "vitest": "^1.0.4",
-    "@vitest/ui": "^1.0.4"
+    "@vitest/ui": "^3.2.4"
   }
 }
