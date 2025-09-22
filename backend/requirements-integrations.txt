@@ -7,7 +7,7 @@
 twilio>=8.10.0,<8.11.0
 
 # Background jobs e filas
-celery>=5.3.0,<5.4.0
+celery>=5.3.0,<5.6.0
 
 # Cache e performance
 # redis já está em requirements-base.txt
